@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Channel;
 use App\Http\Requests\ThreadStoreRequest;
 use App\Thread;
+use App\User;
 use Illuminate\Http\Request;
 
 class ThreadController extends Controller
@@ -14,13 +15,21 @@ class ThreadController extends Controller
         $this->middleware('auth')->except(['index', 'show']);
     }
 
-    public function index(? Channel $channel)
+    public function index(Request $request, ? Channel $channel)
     {
-        if (!is_null($channel) && $channel->exists) {
-            $threads = $channel->threads()->latest()->get();
+        if ($channel->exists) {
+            $threads = $channel->threads()->latest();
         } else {
-            $threads = Thread::latest()->get();
+            $threads = Thread::latest();
         }
+
+        if ($request->has('by')) {
+            $user = User::whereName($request->by)->firstOrFail();
+
+            $threads->where('user_id', $user->id);
+        }
+
+        $threads = $threads->get();
 
         return view('threads.index')->withThreads($threads);
     }
