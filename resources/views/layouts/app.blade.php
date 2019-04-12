@@ -37,6 +37,10 @@
                             <a href="/threads" class="nav-link">All Threads</a>
                         </li>
 
+                        <li class="nav-item">
+                            <a href="/threads/create" class="nav-link">New Thread</a>
+                        </li>
+
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                                 Channels

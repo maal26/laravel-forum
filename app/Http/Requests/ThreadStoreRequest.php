@@ -16,8 +16,14 @@ class ThreadStoreRequest extends FormRequest
         return [
             'title'      => 'required|string|max:255',
             'body'       => 'required|string',
-            'user_id'    => 'required|exists:users,id',
             'channel_id' => 'required|exists:channels,id'
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'channel_id' => 'channel'
         ];
     }
 }
