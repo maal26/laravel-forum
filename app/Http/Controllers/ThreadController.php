@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ThreadStoreRequest;
 use App\Thread;
 use Illuminate\Http\Request;
 
@@ -40,7 +41,7 @@ class ThreadController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ThreadStoreRequest $request)
     {
         $thread = Thread::create([
             'user_id'    => auth()->id(),
