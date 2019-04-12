@@ -13,26 +13,23 @@ class StoreThreadsTest extends TestCase
     /** @test */
     public function guests_may_not_create_threads()
     {
-        $this->post('/threads', [])
-            ->assertRedirect('login');
-    }
-
-    /** @test */
-    public function guests_cannot_see_the_create_threads_page()
-    {
         $this->get('/threads/create')
+            ->assertRedirect('login');
+
+        $this->post('/threads', [])
             ->assertRedirect('login');
     }
 
     /** @test */
     public function an_authenticated_user_can_create_new_forum_threads()
     {
+        $this->withoutExceptionHandling();
+
         $thread = factory(Thread::class)->make();
 
         $this->signIn()
-            ->post('/threads', $thread->toArray());
-
-        $this->get($thread->path())
+            ->followingRedirects()
+            ->post('/threads', $thread->toArray())
             ->assertSee($thread->title)
             ->assertSee($thread->body);
     }

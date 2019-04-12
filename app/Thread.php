@@ -6,11 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Thread extends Model
 {
-    protected $fillable = ['title', 'body', 'user_id'];
+    protected $fillable = ['title', 'body', 'user_id', 'channel_id'];
 
     public function path(?string $segment = null)
     {
-        return is_null($segment) ? "/threads/{$this->id}" : "/threads/{$this->id}/{$segment}";
+        return is_null($segment)
+            ? "/threads/{$this->channel->slug}/{$this->id}"
+            : "/threads/{$this->channel->slug}/{$this->id}/{$segment}";
     }
 
     public function replies()
@@ -21,6 +23,11 @@ class Thread extends Model
     public function creator()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function channel()
+    {
+        return $this->belongsTo(Channel::class);
     }
 
     public function addReply($reply)

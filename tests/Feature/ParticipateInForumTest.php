@@ -29,9 +29,8 @@ class ParticipateInForumTest extends TestCase
         $reply  = factory(Reply::class)->raw();
 
         $this->signIn($user)
-            ->post($thread->path('replies'), $reply);
-
-        $this->get($thread->path())
+            ->followingRedirects()
+            ->post($thread->path('replies'), $reply)
             ->assertSuccessful()
             ->assertSee($reply['body']);
     }
