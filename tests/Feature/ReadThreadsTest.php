@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Channel;
 use App\Reply;
 use App\Thread;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -45,5 +46,17 @@ class ReadThreadsTest extends TestCase
         $this->get($this->thread->path())
             ->assertStatus(Response::HTTP_OK)
             ->assertSee($reply->body);
+    }
+
+    /** @test */
+    public function a_user_can_filter_threads_according_to_a_channel()
+    {
+        $channel            = factory(Channel::class)->create();
+        $threadInChannel    = factory(Thread::class)->create(['channel_id' => $channel->id]);
+        $threadNotInChannel = factory(Thread::class)->create();
+
+        $this->get("/threads/{$channel->slug}")
+            ->assertSee($threadInChannel->title)
+            ->assertDontSee($threadNotInChannel->title);
     }
 }
