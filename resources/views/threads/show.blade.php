@@ -2,7 +2,6 @@
 
 @section('content')
     <div class="container">
-        <h3 class="text-center text-uppercase">Forum Threads</h3>
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card mb-3">

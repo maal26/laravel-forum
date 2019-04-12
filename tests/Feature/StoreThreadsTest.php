@@ -18,6 +18,13 @@ class StoreThreadsTest extends TestCase
     }
 
     /** @test */
+    public function guests_cannot_see_the_create_threads_page()
+    {
+        $this->get('/threads/create')
+            ->assertRedirect('login');
+    }
+
+    /** @test */
     public function an_authenticated_user_can_create_new_forum_threads()
     {
         $thread = factory(Thread::class)->make();
