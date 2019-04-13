@@ -1,7 +1,7 @@
 <div class="card mb-3">
     <div class="card-header d-flex align-items-center justify-content-between">
         <div>
-            <a href="#">{{ $reply->owner->name }}</a>
+            <a href="/profiles/{{ $reply->owner->name }}">{{ $reply->owner->name }}</a>
             said {{ $reply->created_at->diffForHumans() }}...
         </div>
         <div>
