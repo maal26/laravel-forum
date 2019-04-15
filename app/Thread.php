@@ -3,11 +3,14 @@
 namespace App;
 
 use App\Filters\Filters;
+use App\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class Thread extends Model
 {
+    use RecordsActivity;
+
     protected $fillable = ['title', 'body', 'user_id', 'channel_id'];
 
     protected $with = ['creator', 'channel'];

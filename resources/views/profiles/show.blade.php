@@ -14,8 +14,8 @@
                     <div class="card mb-3">
                         <div class="card-header d-flex justify-content-between">
                             <div>
-                                <a href="#">{{ $thread->creator->name }}</a> posted:
-                                {{ $thread->title }}
+                                <a href="/profiles/{{ $thread->creator->name  }}">{{ $thread->creator->name }}</a> posted:
+                                <a href="{{ $thread->path() }}">{{ $thread->title }}</a>
                             </div>
                             <div>
                                 <small>{{ $thread->created_at->diffForHumans() }}</small>

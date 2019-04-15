@@ -12,16 +12,20 @@ class DeleteThreadTest extends TestCase
     use DatabaseMigrations;
 
     /** @test */
-    public function guests_cannot_delete_threads()
+    public function unauthorized_users_may_not_delete_threads()
     {
         $thread = factory(Thread::class)->create();
 
         $this->delete($thread->path(), ['id' => $thread->id])
             ->assertRedirect('login');
+
+        $this->signIn()
+            ->delete($thread->path(), ['id' => $thread->id])
+            ->assertForbidden();
     }
 
     /** @test */
-    public function a_thread_can_be_deleted()
+    public function authorized_users_can_delete_threads()
     {
         $this->signIn();
 
@@ -29,17 +33,12 @@ class DeleteThreadTest extends TestCase
         $reply  = factory(Reply::class)->create(['thread_id' => $thread->id]);
         $this->delete($thread->path(), ['id' => $thread->id]);
 
-        $this->assertDatabaseMissing('threads', [
-            'id' => $thread->id
-        ]);
-
-        $this->assertDatabaseMissing('replies', [
-            'id' => $reply->id
-        ]);
+        $this->assertDatabaseMissing('threads', ['id' => $thread->id]);
+        $this->assertDatabaseMissing('replies', ['id' => $reply->id]);
     }
 
     public function threads_may_only_be_deleted_by_those_who_have_permission()
     {
-        
+
     }
 }

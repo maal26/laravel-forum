@@ -60,7 +60,7 @@ class ThreadController extends Controller
     public function show($channelId, Thread $thread)
     {
         return view('threads.show')->with([
-            'thread' => $thread,
+            'thread'  => $thread,
             'replies' => $thread->replies()->paginate(20)
         ]);
     }
@@ -97,6 +97,8 @@ class ThreadController extends Controller
      */
     public function destroy(Channel $channel, Thread $thread)
     {
+        $this->authorize('update', $thread);
+
         $thread->replies()->delete();
         $thread->delete();
 
