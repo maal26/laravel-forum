@@ -31,7 +31,6 @@ class ParticipateInForumTest extends TestCase
         $this->signIn($user)
             ->followingRedirects()
             ->post($thread->path('replies'), $reply)
-            ->assertSuccessful()
             ->assertSee($reply['body']);
     }
 
