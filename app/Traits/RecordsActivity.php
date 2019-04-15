@@ -23,14 +23,19 @@ trait RecordsActivity
         static::$event(function ($model) use ($event) {
             $model->recordActivity($event);
         });
+
+        if ($event === 'deleting') {
+            static::deleting(function ($model) {
+                $model->activity()->delete();
+            });
+        }
     }
 
     public static function getRecordableEvents()
     {
-        if (isset(static::$recordableEvents)) {
-            return collect(static::$recordableEvents);
-        }
-        return collect(['created']);
+        return isset(static::$recordableEvents)
+            ? collect(static::$recordableEvents)
+            : collect(['created']);
     }
 
     public function recordActivity($event)

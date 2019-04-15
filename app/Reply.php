@@ -14,6 +14,8 @@ class Reply extends Model
 
     protected $with = ['owner', 'favorites'];
 
+    protected static $recordableEvents = ['created', 'deleting'];
+
     public function owner()
     {
         return $this->belongsTo(User::class, 'user_id');

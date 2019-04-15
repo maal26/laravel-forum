@@ -13,6 +13,8 @@ class Thread extends Model
 
     protected $fillable = ['title', 'body', 'user_id', 'channel_id'];
 
+    protected static $recordableEvents = ['created', 'deleting'];
+
     protected $with = ['creator', 'channel'];
 
     public static function boot()
