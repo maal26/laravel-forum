@@ -6,9 +6,10 @@ use App\Reply;
 use App\Thread;
 use App\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Http\Response;
 use Tests\TestCase;
 
-class ParticipateInForumTest extends TestCase
+class ParticipateInThreadsTest extends TestCase
 {
     use DatabaseMigrations;
 
@@ -44,5 +45,37 @@ class ParticipateInForumTest extends TestCase
         $this->signIn($user)
             ->post($thread->path('replies'), $reply)
             ->assertSessionHasErrors('body');
+    }
+
+    /** @test */
+    public function guests_users_cannot_delete_replies()
+    {
+        $reply = factory(Reply::class)->create();
+
+        $this->delete("/replies/{$reply->id}")
+            ->assertRedirect('login');
+    }
+
+    /** @test */
+    public function unauthorized_users_cannot_delete_replies()
+    {
+        $reply = factory(Reply::class)->create();
+
+        $this->signIn()
+            ->delete("/replies/{$reply->id}")
+            ->assertForbidden();
+    }
+
+    /** @test */
+    public function authorized_users_cannot_delete_replies()
+    {
+        $this->signIn();
+
+        $reply = factory(Reply::class)->create(['user_id' => auth()->id()]);
+
+        $this->delete("/replies/{$reply->id}")
+            ->assertStatus(Response::HTTP_FOUND);
+
+        $this->assertDatabaseMissing('replies', $reply->toArray());
     }
 }
