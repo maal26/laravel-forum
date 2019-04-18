@@ -31,11 +31,22 @@ class ReplyController extends Controller
         return redirect($thread->path())->withFlash('Your reply has been left.');
     }
 
+    public function update(Reply $reply)
+    {
+        $this->authorize('update', $reply);
+
+        $reply->update(request()->all());
+    }
+
     public function destroy(Reply $reply)
     {
         $this->authorize('update', $reply);
 
         $reply->delete();
+
+        if (request()->wantsJson()) {
+            return response()->json(['status' => 'Reply Deleted']);
+        }
 
         return back();
     }

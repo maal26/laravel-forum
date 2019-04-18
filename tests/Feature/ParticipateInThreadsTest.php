@@ -61,6 +61,9 @@ class ParticipateInThreadsTest extends TestCase
     {
         $reply = factory(Reply::class)->create();
 
+        $this->delete("/replies/{$reply->id}")
+            ->assertRedirect('login');
+
         $this->signIn()
             ->delete("/replies/{$reply->id}")
             ->assertForbidden();
@@ -77,5 +80,34 @@ class ParticipateInThreadsTest extends TestCase
             ->assertStatus(Response::HTTP_FOUND);
 
         $this->assertDatabaseMissing('replies', $reply->toArray());
+    }
+
+    /** @test */
+    public function unauthorized_users_cannot_update_replies()
+    {
+        $reply = factory(Reply::class)->create();
+
+        $this->patch("/replies/{$reply->id}")
+            ->assertRedirect('login');
+
+        $this->signIn()
+            ->patch("/replies/{$reply->id}")
+            ->assertForbidden();
+    }
+
+    /** @test */
+    public function authorized_users_can_update_replies()
+    {
+        $this->signIn();
+
+        $reply       = factory(Reply::class)->create(['user_id' => auth()->id()]);
+        $reply->body = 'You been changed, fool.';
+
+        $this->patch("/replies/{$reply->id}", $reply->toArray());
+
+        $this->assertDatabaseHas('replies', [
+            'id'   => $reply->id,
+            'body' => $reply->body
+        ]);
     }
 }
