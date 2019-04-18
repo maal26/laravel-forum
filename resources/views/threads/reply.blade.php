@@ -5,16 +5,11 @@
                 <a href="/profiles/{{ $reply->owner->name }}">{{ $reply->owner->name }}</a>
                 said {{ $reply->created_at->diffForHumans() }}...
             </div>
-            <div>
-                <favorite :reply="{{ $reply }}"></favorite>
-{{--                <form action="/replies/{{ $reply->id }}/favorites" method="post">--}}
-{{--                    @csrf--}}
-
-{{--                    <button class="btn btn-sm btn-outline-primary" {{ $reply->isFavorited() ? 'disabled' : '' }}>--}}
-{{--                        {{ $reply->favorites_count }} {{ \Str::plural('Favorite', $reply->favorites_count) }}--}}
-{{--                    </button>--}}
-{{--                </form>--}}
-            </div>
+            @auth
+                <div>
+                    <favorite :reply="{{ $reply }}"></favorite>
+                </div>
+            @endauth
         </div>
         <div v-if="editing">
             <textarea name="" class="form-control mb-2" v-model="body"></textarea>
@@ -30,12 +25,6 @@
             <div class="card-footer d-flex">
                 <button class="btn btn-sm btn-info mr-2" @click="editing = true">Edit</button>
                 <button class="btn btn-sm btn-danger" @click="destroy">Delete</button>
-{{--                <form action="/replies/{{ $reply->id }}" method="post">--}}
-{{--                    @csrf--}}
-{{--                    @method('DELETE')--}}
-
-{{--                    <button class="btn btn-sm btn-danger">Delete</button>--}}
-{{--                </form>--}}
             </div>
         @endcan
     </div>

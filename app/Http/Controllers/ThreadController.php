@@ -22,22 +22,11 @@ class ThreadController extends Controller
         return view('threads.index')->withThreads($threads);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         return view('threads.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(ThreadStoreRequest $request)
     {
         $thread = Thread::create([
@@ -50,13 +39,6 @@ class ThreadController extends Controller
         return redirect($thread->path())->withFlash('Your Thread has been published');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param $channelId
-     * @param \App\Thread $thread
-     * @return \Illuminate\Http\Response
-     */
     public function show($channelId, Thread $thread)
     {
         return view('threads.show')->with([
@@ -65,36 +47,16 @@ class ThreadController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param \App\Thread $thread
-     * @return \Illuminate\Http\Response
-     */
     public function edit(Thread $thread)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Thread $thread
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, Thread $thread)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param \App\Channel $channel
-     * @param \App\Thread $thread
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Channel $channel, Thread $thread)
     {
         $this->authorize('update', $thread);
@@ -105,11 +67,6 @@ class ThreadController extends Controller
         return redirect('/threads');
     }
 
-    /**
-     * @param ThreadFilter $filters
-     * @param Channel $channel
-     * @return mixed
-     */
     protected function getThreads(ThreadFilter $filters, Channel $channel)
     {
         $threads = Thread::filter($filters)->latest();

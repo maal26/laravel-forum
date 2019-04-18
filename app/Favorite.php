@@ -11,6 +11,8 @@ class Favorite extends Model
 
     protected $fillable = ['user_id', 'favorited_type', 'favorited_id'];
 
+    protected static $recordableEvents = ['created', 'deleting'];
+
     public function favorited()
     {
         return $this->morphTo();

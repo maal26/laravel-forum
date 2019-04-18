@@ -1,6 +1,7 @@
 <template>
     <button class="btn btn-sm btn-outline-primary" @click="toggle">
-        {{ favoritesCount | plural }}
+        <i class="text-danger" :class="favoriteClass"></i>
+        {{ favoritesCount }}
     </button>
 </template>
 
@@ -21,11 +22,9 @@
         computed: {
             endpoint() {
                 return `/replies/${this.reply.id}/favorites`;
-            }
-        },
-        filters: {
-            plural(value) {
-                return value === 1 ? `${value} Favorite` : `${value} Favorites`;
+            },
+            favoriteClass() {
+                return this.isFavorited ? 'fas fa-heart' :'far fa-heart';
             }
         },
         methods: {
