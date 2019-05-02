@@ -4,17 +4,18 @@ namespace App;
 
 use App\Traits\Favoritable;
 use App\Traits\RecordsActivity;
+use App\Traits\WithPolicy;
 use Illuminate\Database\Eloquent\Model;
 
 class Reply extends Model
 {
-    use Favoritable, RecordsActivity;
+    use Favoritable, RecordsActivity, WithPolicy;
 
     protected $fillable = ['body', 'user_id'];
 
     protected $with = ['owner', 'favorites'];
 
-    protected $appends = ['favoritesCount', 'isFavorited'];
+    protected $appends = ['favoritesCount', 'isFavorited', 'can'];
 
     protected static $recordableEvents = ['created', 'deleting'];
 

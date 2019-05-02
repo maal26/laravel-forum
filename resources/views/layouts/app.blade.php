@@ -18,6 +18,12 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+    <script charset="utf-8">
+        window.App = {!! json_encode([
+            'signedIn' => auth()->check()
+        ]) !!};
+    </script>
 </head>
 
 <body>
