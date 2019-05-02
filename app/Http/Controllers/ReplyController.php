@@ -15,10 +15,14 @@ class ReplyController extends Controller
 
     public function store(ReplyStoreRequest $request, $channelId, Thread $thread)
     {
-        $thread->addReply([
+        $reply = $thread->addReply([
             'body'    => $request->body,
             'user_id' => auth()->id()
         ]);
+
+        if (request()->wantsJson()) {
+            return response()->json($reply);
+        }
 
         return redirect($thread->path())->withFlash('Your reply has been left.');
     }

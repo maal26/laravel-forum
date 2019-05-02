@@ -25,30 +25,9 @@
                         <div class="card-body">{{ $thread->body }}</div>
                     </div>
 
-                    <replies :replies="{{ $thread->replies }}" @removed="count--"></replies>
+                    <replies :replies="{{ $thread->replies }}" @created="count++" @removed="count--"></replies>
 
                     <span class="d-flex justify-content-center">{{ $replies->links() }}</span>
-
-                    @auth
-                        <form action="{{ $thread->path('replies') }}" method="post" class="w-100">
-                            @csrf
-
-                            <textarea
-                                name="body"
-                                rows="5"
-                                class="form-control"
-                                placeholder="Have something to say?">
-                            </textarea>
-                            <button class="btn btn-primary mt-3">Post</button>
-                        </form>
-                    @endauth
-
-                    @guest
-                        <p class="text-center">
-                            Please <a href="{{ route('login') }}">sign in </a> to participate in this discussion
-                        </p>
-                    @endguest
-
                 </div>
 
                 <div class="col-md-4">
