@@ -25,9 +25,9 @@
                         <div class="card-body">{{ $thread->body }}</div>
                     </div>
 
-                    <replies :replies="{{ $thread->replies }}" @created="count++" @removed="count--"></replies>
+                    <replies @created="count++" @removed="count--"></replies>
 
-                    <span class="d-flex justify-content-center">{{ $replies->links() }}</span>
+                    {{-- <span class="d-flex justify-content-center">{{ $replies->links() }}</span> --}}
                 </div>
 
                 <div class="col-md-4">

@@ -5,13 +5,11 @@
                 <a :href="`/profiles/${reply.owner.name}`">
                     {{ reply.owner.name }}
                 </a>
-                said {{ reply.created_at }}...
+                said {{ reply.created_at | ago }}...
             </div>
-            <!-- @auth -->
             <div v-if="signedIn">
                 <favorite :reply="reply"></favorite>
             </div>
-            <!-- @endauth -->
         </div>
         <div v-if="editing">
             <textarea name="" class="form-control mb-2" v-model="body"></textarea>
@@ -32,6 +30,7 @@
 
 <script>
 import Favorite from './Favorite';
+import moment from 'moment';
 
 export default {
     props: {
@@ -52,6 +51,11 @@ export default {
     computed: {
         signedIn() {
             return window.App.signedIn;
+        }
+    },
+    filters: {
+        ago(value) {
+            return moment(value).fromNow();
         }
     },
     methods: {

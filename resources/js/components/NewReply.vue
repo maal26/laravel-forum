@@ -21,12 +21,6 @@
 
 <script>
 export default {
-    props: {
-        endpoint: {
-            type: String,
-            required: true
-        }
-    },
     data: () => ({
         body: ''
     }),
@@ -36,6 +30,9 @@ export default {
         },
         loginURL() {
             return `${window.location.origin}/login`;
+        },
+        endpoint() {
+            return `${window.location.pathname}/replies`;
         },
     },
     methods: {

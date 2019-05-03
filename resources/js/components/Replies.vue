@@ -1,45 +1,62 @@
 <template>
     <div>
-        <div v-for="reply in items" :key="reply.id">
+        <div v-for="reply in replies" :key="reply.id">
             <reply :reply="reply" @deleted="filterReplies"></reply>
         </div>
 
-        <new-reply :endpoint="endpoint" @created="addReply"></new-reply>
+        <paginator :data-set="dataSet" @changed="fetchReplies"></paginator>
+
+        <new-reply @created="addReply"></new-reply>
     </div>
 </template>
 
 <script>
+import Paginator from './Paginator';
 import Reply from './Reply';
 import NewReply from './NewReply';
 export default {
-    props: {
-        replies: {
-            type: Array,
-            required: true
-        }
-    },
     components: {
+        Paginator,
         NewReply,
         Reply
     },
     data() {
         return {
-            items: this.replies,
+            replies: [],
+            dataSet: {}
         }
     },
+    created() {
+        this.fetchReplies();
+    },
     computed: {
-        endpoint() {
+        path() {
             return `${window.location.pathname}/replies`;
         }
     },
     methods: {
+        fetchReplies(page) {
+            axios.get(this.url(page)).then(this.refresh)
+        },
+        url(page) {
+            if (!page) {
+                let query = new URLSearchParams(window.location.search);
+
+                page = query.has('page') ? parseInt(query.get('page')) : 1
+            }
+            return `${this.path}?page=${page}`;
+        },
+        refresh({ data: response }) {
+            this.dataSet = response;
+            this.replies = response.data;
+        },
         addReply(reply) {
-            this.items.push(reply);
+            this.replies.push(reply);
 
             this.$emit('created');
         },
         filterReplies({ id }) {
-            this.items = this.items.filter(i => i.id !== id);
+            this.replies = this.replies.filter(i => i.id !== id);
 
             this.$emit('removed');
         }
