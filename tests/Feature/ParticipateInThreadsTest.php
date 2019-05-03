@@ -31,8 +31,11 @@ class ParticipateInThreadsTest extends TestCase
 
         $this->signIn($user)
             ->followingRedirects()
-            ->post($thread->path('replies'), $reply)
-            ->assertSee($reply['body']);
+            ->post($thread->path('replies'), $reply);
+
+        $this->assertDatabaseHas('replies', [
+            'body' => $reply['body']
+        ]);
     }
 
     /** @test */
@@ -72,14 +75,18 @@ class ParticipateInThreadsTest extends TestCase
     /** @test */
     public function authorized_users_cannot_delete_replies()
     {
+        $this->withExceptionHandling();
+
         $this->signIn();
 
         $reply = factory(Reply::class)->create(['user_id' => auth()->id()]);
 
-        $this->delete("/replies/{$reply->id}")
+        $this->delete("/replies/{$reply['id']}")
             ->assertStatus(Response::HTTP_FOUND);
 
-        $this->assertDatabaseMissing('replies', $reply->toArray());
+        $this->assertDatabaseMissing('replies', [
+            'body' => $reply->body
+        ]);
     }
 
     /** @test */

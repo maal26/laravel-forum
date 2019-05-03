@@ -2037,6 +2037,7 @@ __webpack_require__.r(__webpack_exports__);
       var response = _ref.data;
       this.dataSet = response;
       this.replies = response.data;
+      window.scrollTo(0, 0);
     },
     addReply: function addReply(reply) {
       this.replies.push(reply);

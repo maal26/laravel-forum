@@ -49,6 +49,8 @@ export default {
         refresh({ data: response }) {
             this.dataSet = response;
             this.replies = response.data;
+
+            window.scrollTo(0, 0);
         },
         addReply(reply) {
             this.replies.push(reply);
