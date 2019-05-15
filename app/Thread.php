@@ -33,6 +33,13 @@ class Thread extends Model
             : "/threads/{$this->channel->slug}/{$this->id}/{$segment}";
     }
 
+    public function getIsSubscribedToAttribute()
+    {
+        return $this->subscriptions()
+            ->where('user_id', auth()->id())
+            ->exists();
+    }
+
     public function replies()
     {
         return $this->hasMany(Reply::class);

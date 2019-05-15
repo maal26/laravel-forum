@@ -1,5 +1,6 @@
 <script>
 import Replies from '../Replies.vue';
+import SubscribeButton from '../SubscribeButton.vue';
 export default {
     props: {
         repliesCount: {
@@ -8,7 +9,8 @@ export default {
         }
     },
     components: {
-        Replies
+        Replies,
+        SubscribeButton
     },
     data() {
         return {

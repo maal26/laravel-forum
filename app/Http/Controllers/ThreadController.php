@@ -41,7 +41,7 @@ class ThreadController extends Controller
 
     public function show($channelId, Thread $thread)
     {
-        return view('threads.show')->withThread($thread);
+        return view('threads.show')->withThread($thread->append('isSubscribedTo'));
     }
 
     public function edit(Thread $thread)
