@@ -48,6 +48,11 @@ class Thread extends Model
         return $this->belongsTo(Channel::class);
     }
 
+    public function subscriptions()
+    {
+        return $this->hasMany(ThreadSubscription::class);
+    }
+
     public function scopeFilter(Builder $query, Filters $filters)
     {
         return $filters->apply($query);
@@ -70,10 +75,5 @@ class Thread extends Model
         $this->subscriptions()
             ->where('user_id', $userId ?? auth()->id())
             ->delete();
-    }
-
-    public function subscriptions()
-    {
-        return $this->hasMany(ThreadSubscription::class);
     }
 }
