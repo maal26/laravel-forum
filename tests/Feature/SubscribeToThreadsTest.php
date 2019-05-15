@@ -15,13 +15,12 @@ class SubscribeToThreadsTest extends TestCase
     {
         $thread = factory(Thread::class)->create();
 
+        $this->assertCount(0, $thread->fresh()->subscriptions);
+
         $this->signIn()
             ->post($thread->path('subscriptions'));
 
-        $thread->addReply([
-            'user_id' => auth()->id(),
-            'body'    => 'Some reply here'
-        ]);
+        $this->assertCount(1, $thread->fresh()->subscriptions);
     }
 
     /** @test */
