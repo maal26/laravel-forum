@@ -48,13 +48,32 @@ class Thread extends Model
         return $this->belongsTo(Channel::class);
     }
 
+    public function scopeFilter(Builder $query, Filters $filters)
+    {
+        return $filters->apply($query);
+    }
+
     public function addReply($reply)
     {
         return $this->replies()->create($reply);
     }
 
-    public function scopeFilter(Builder $query, Filters $filters)
+    public function subscribe(? int $userId = null)
     {
-        return $filters->apply($query);
+        $this->subscriptions()->create([
+            'user_id' => $userId ?? auth()->id()
+        ]);
+    }
+
+    public function unsubscribe(? int $userId = null)
+    {
+        $this->subscriptions()
+            ->where('user_id', $userId ?? auth()->id())
+            ->delete();
+    }
+
+    public function subscriptions()
+    {
+        return $this->hasMany(ThreadSubscription::class);
     }
 }
