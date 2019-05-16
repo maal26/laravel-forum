@@ -6,6 +6,7 @@ use App\Http\Requests\ReplyStoreRequest;
 use App\Inspections\Spam;
 use App\Reply;
 use App\Thread;
+use Illuminate\Http\Request;
 
 class ReplyController extends Controller
 {
@@ -35,9 +36,12 @@ class ReplyController extends Controller
         return redirect($thread->path())->withFlash('Your reply has been left.');
     }
 
-    public function update(Reply $reply)
+    public function update(Request $request, Reply $reply, Spam $spam)
     {
         $this->authorize('update', $reply);
+
+        $request->validate(['body' => 'required']);
+        $spam->detect($request->body);
 
         $reply->update(request()->all());
     }
