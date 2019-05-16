@@ -117,4 +117,21 @@ class ParticipateInThreadsTest extends TestCase
             'body' => $reply->body
         ]);
     }
+
+    /** @test */
+    public function replies_that_contains_spam_may_not_be_created()
+    {
+        $this->withoutExceptionHandling();
+
+        $this->signIn();
+
+        $reply = factory(Reply::class)->create([
+            'user_id' => auth()->id(),
+            'body'    => 'Yahoo Customer Support'
+        ]);
+
+        $this->expectException(\Exception::class);
+
+        $this->post("/replies/{$reply->id}", $reply->toArray());
+    }
 }
