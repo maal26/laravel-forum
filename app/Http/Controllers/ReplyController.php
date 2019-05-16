@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ReplyStoreRequest;
+use App\Inspections\Spam;
 use App\Reply;
-use App\Spam;
 use App\Thread;
 
 class ReplyController extends Controller
