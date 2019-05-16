@@ -17,6 +17,8 @@ class Reply extends Model
 
     protected $appends = ['favoritesCount', 'isFavorited', 'can'];
 
+    protected $touches = ['thread'];
+
     protected static $recordableEvents = ['created', 'deleting'];
 
     public function owner()

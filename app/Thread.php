@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\Events\ThreadHasNewReply;
 use App\Filters\Filters;
 use App\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\Builder;
@@ -97,5 +96,13 @@ class Thread extends Model
         $this->subscriptions()
             ->where('user_id', $userId ?? auth()->id())
             ->delete();
+    }
+
+    public function hasUpdateFor(User $user)
+    {
+        $key = $user->visitedThreadCacheKey($this);
+        // $key = sprintf('user.%s.visits.%s', optional($user)->id ?? auth()->id(), $this->id);
+
+        return $this->updated_at > cache($key);
     }
 }
