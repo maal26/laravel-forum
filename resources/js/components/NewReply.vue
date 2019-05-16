@@ -5,9 +5,11 @@
                 name="body"
                 rows="5"
                 class="form-control"
+                :class="{'is-invalid': errorMessage}"
                 placeholder="Have something to say?"
                 v-model="body">
             </textarea>
+            <span class="small invalid-feedback">{{ errorMessage }}</span>
             <button class="btn btn-primary mt-3" @click="addReply">Post</button>
         </div>
 
@@ -22,7 +24,8 @@
 <script>
 export default {
     data: () => ({
-        body: ''
+        body: '',
+        errorMessage: ''
     }),
     computed: {
         isSignedIn() {
@@ -40,9 +43,12 @@ export default {
             axios.post(this.endpoint, { body: this.body })
                 .then(({ data }) => {
                     this.body = '';
-
+                    this.errorMessage = '';
                     this.$emit('created', data);
-                });
+                })
+                .catch(e => {
+                    this.errorMessage = e.response.data.message;
+                })
         }
     }
 }

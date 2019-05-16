@@ -7,6 +7,7 @@ use App\Inspections\Spam;
 use App\Reply;
 use App\Thread;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class ReplyController extends Controller
 {
@@ -22,28 +23,38 @@ class ReplyController extends Controller
 
     public function store(ReplyStoreRequest $request, $channelId, Thread $thread, Spam $spam)
     {
-        $spam->detect($request->body);
+        try {
+            $spam->detect($request->body);
 
-        $reply = $thread->addReply([
-            'body'    => $request->body,
-            'user_id' => auth()->id()
-        ]);
-
-        if (request()->wantsJson()) {
-            return response()->json($reply);
+            $reply = $thread->addReply([
+                'body'    => $request->body,
+                'user_id' => auth()->id()
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(
+                ['message' => 'Sorry, your reply could not be saved at this time.'],
+                Response::HTTP_UNPROCESSABLE_ENTITY
+            );
         }
 
-        return redirect($thread->path())->withFlash('Your reply has been left.');
+        return response()->json($reply);
     }
 
     public function update(Request $request, Reply $reply, Spam $spam)
     {
         $this->authorize('update', $reply);
 
-        $request->validate(['body' => 'required']);
-        $spam->detect($request->body);
+        try {
+            $request->validate(['body' => 'required']);
+            $spam->detect($request->body);
 
-        $reply->update(request()->all());
+            $reply->update(request()->all());
+        } catch (\Exception $e) {
+            return response()->json(
+                ['message' => 'Sorry, your reply could not be saved at this time.'],
+                Response::HTTP_UNPROCESSABLE_ENTITY
+            );
+        }
     }
 
     public function destroy(Reply $reply)

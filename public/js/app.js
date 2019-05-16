@@ -1866,10 +1866,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      body: ''
+      body: '',
+      errorMessage: ''
     };
   },
   computed: {
@@ -1892,8 +1895,11 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (_ref) {
         var data = _ref.data;
         _this.body = '';
+        _this.errorMessage = '';
 
         _this.$emit('created', data);
+      })["catch"](function (e) {
+        _this.errorMessage = e.response.data.message;
       });
     }
   }
@@ -55922,6 +55928,7 @@ var render = function() {
               }
             ],
             staticClass: "form-control",
+            class: { "is-invalid": _vm.errorMessage },
             attrs: {
               name: "body",
               rows: "5",
@@ -55937,6 +55944,10 @@ var render = function() {
               }
             }
           }),
+          _vm._v(" "),
+          _c("span", { staticClass: "small invalid-feedback" }, [
+            _vm._v(_vm._s(_vm.errorMessage))
+          ]),
           _vm._v(" "),
           _c(
             "button",
