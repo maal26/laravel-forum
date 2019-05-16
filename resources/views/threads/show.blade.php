@@ -35,9 +35,11 @@
                             by <a href="#">{{ $thread->creator->name }}</a>, and currently
                             has <span>@{{ count }}</span> {{ Str::plural('comment', $thread->replies_count) }}.
 
-                            <p>
-                                <subscribe-button :active="{{ json_encode($thread->isSubscribedTo) }}"></subscribe-button>
-                            </p>
+                            @auth
+                                <p>
+                                    <subscribe-button :active="{{ json_encode($thread->isSubscribedTo) }}"></subscribe-button>
+                                </p>
+                            @endauth
                         </div>
                     </div>
                 </div>
