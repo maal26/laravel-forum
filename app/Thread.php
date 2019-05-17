@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Events\ThreadReceveidNewReply;
 use App\Filters\Filters;
 use App\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\Builder;
@@ -69,17 +70,9 @@ class Thread extends Model
     {
         $reply = $this->replies()->create($reply);
 
-        $this->notifySubscribers($reply);
+        event(new ThreadReceveidNewReply($reply));
 
         return $reply;
-    }
-
-    public function notifySubscribers(Reply $reply)
-    {
-        $this->subscriptions
-            ->where('user_id', '!=', $reply->user_id)
-            ->each
-            ->notify($reply);
     }
 
     public function subscribe(? int $userId = null)
