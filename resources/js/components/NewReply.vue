@@ -47,7 +47,7 @@ export default {
                     this.$emit('created', data);
                 })
                 .catch(e => {
-                    this.errorMessage = e.response.data.message;
+                    this.errorMessage = e.response.data.errors.body[0];
                 })
         }
     }

@@ -1899,7 +1899,7 @@ __webpack_require__.r(__webpack_exports__);
 
         _this.$emit('created', data);
       })["catch"](function (e) {
-        _this.errorMessage = e.response.data.message;
+        _this.errorMessage = e.response.data.errors.body[0];
       });
     }
   }

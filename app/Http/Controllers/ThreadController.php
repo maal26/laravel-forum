@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Channel;
 use App\Filters\ThreadFilter;
 use App\Http\Requests\ThreadStoreRequest;
-use App\Inspections\Spam;
 use App\Thread;
 use Illuminate\Http\Request;
 
@@ -28,10 +27,8 @@ class ThreadController extends Controller
         return view('threads.create');
     }
 
-    public function store(ThreadStoreRequest $request, Spam $spam)
+    public function store(ThreadStoreRequest $request)
     {
-        $spam->detect($request->body);
-
         $thread = Thread::create([
             'user_id'    => auth()->id(),
             'channel_id' => $request->channel_id,

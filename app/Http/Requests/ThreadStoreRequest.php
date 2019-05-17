@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\SpamFree;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ThreadStoreRequest extends FormRequest
@@ -15,7 +16,7 @@ class ThreadStoreRequest extends FormRequest
     {
         return [
             'title'      => 'required|string|max:255',
-            'body'       => 'required|string',
+            'body'       => ['required', 'string', new SpamFree],
             'channel_id' => 'required|exists:channels,id'
         ];
     }
