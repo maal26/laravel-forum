@@ -21,7 +21,7 @@
                 </div>
             </form>
         </div>
-        <div class="card-body" v-else v-text="body">
+        <div class="card-body" v-else v-html="body">
         </div>
         <div class="card-footer d-flex" v-if="reply.can.update">
             <button class="btn btn-sm btn-info mr-2" @click="editing = true">Edit</button>
