@@ -94,11 +94,11 @@ class ParticipateInThreadsTest extends TestCase
     {
         $reply = factory(Reply::class)->create();
 
-        $this->patch("/replies/{$reply->id}")
-            ->assertRedirect('login');
+        $this->patchJson("/replies/{$reply->id}")
+            ->assertStatus(Response::HTTP_UNAUTHORIZED);
 
         $this->signIn()
-            ->patch("/replies/{$reply->id}")
+            ->patchJson("/replies/{$reply->id}")
             ->assertForbidden();
     }
 
@@ -107,31 +107,47 @@ class ParticipateInThreadsTest extends TestCase
     {
         $this->signIn();
 
-        $reply       = factory(Reply::class)->create(['user_id' => auth()->id()]);
-        $reply->body = 'You been changed, fool.';
+        $reply        = factory(Reply::class)->create(['user_id' => auth()->id()]);
+        $updatedReply = 'You been changed, fool.';
 
-        $this->patch("/replies/{$reply->id}", $reply->toArray());
+        $this->patchJson("/replies/{$reply->id}", ['body' => $updatedReply]);
 
         $this->assertDatabaseHas('replies', [
             'id'   => $reply->id,
-            'body' => $reply->body
+            'body' => $updatedReply
         ]);
     }
 
     /** @test */
     public function replies_that_contains_spam_may_not_be_created()
     {
-        $this->withoutExceptionHandling();
-
         $this->signIn();
 
-        $reply = factory(Reply::class)->create([
+        $thread = factory(Thread::class)->create();
+        $reply  = factory(Reply::class)->create([
             'user_id' => auth()->id(),
             'body'    => 'Yahoo Customer Support'
         ]);
 
-        $this->expectException(\Exception::class);
+        $this->postJson($thread->path('replies'), $reply->toArray())
+            ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
 
-        $this->post("/replies/{$reply->id}", $reply->toArray());
+    /** @test */
+    public function users_may_only_reply_a_maximum_of_once_per_minute()
+    {
+        $this->signIn();
+
+        $thread = factory(Thread::class)->create();
+        $reply  = factory(Reply::class)->create([
+            'user_id' => auth()->id(),
+            'body'    => 'Simple Reply'
+        ]);
+
+        $this->postJson($thread->path('replies'), $reply->toArray())
+            ->assertStatus(Response::HTTP_CREATED);
+
+        $this->postJson($thread->path('replies'), $reply->toArray())
+            ->assertStatus(Response::HTTP_TOO_MANY_REQUESTS);
     }
 }

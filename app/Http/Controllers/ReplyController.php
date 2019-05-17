@@ -6,7 +6,9 @@ use App\Http\Requests\ReplyStoreRequest;
 use App\Http\Requests\ReplyUpdateRequest;
 use App\Reply;
 use App\Thread;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Gate;
 
 class ReplyController extends Controller
 {
@@ -22,6 +24,12 @@ class ReplyController extends Controller
 
     public function store(ReplyStoreRequest $request, $channelId, Thread $thread)
     {
+        abort_if(
+            Gate::denies('create', new Reply),
+            Response::HTTP_TOO_MANY_REQUESTS,
+            'You are posting too frequently. Please Take a break'
+        );
+
         $reply = $thread->addReply([
             'body'    => $request->body,
             'user_id' => auth()->id()
