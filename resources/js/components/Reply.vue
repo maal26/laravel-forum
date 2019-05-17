@@ -12,12 +12,14 @@
             </div>
         </div>
         <div v-if="editing">
-            <textarea name="" class="form-control mb-2" v-model="body"></textarea>
+            <form @submit.prevent="update">
+                <textarea name="" class="form-control mb-2" v-model="body" required></textarea>
 
-            <div class="form-group">
-                <button class="btn btn-sm btn-primary ml-2" @click="update">Update</button>
-                <button class="btn btn-sm btn-link" @click="editing = false">Cancel</button>
-            </div>
+                <div class="form-group">
+                    <button class="btn btn-sm btn-primary ml-2">Update</button>
+                    <button class="btn btn-sm btn-link" @click="editing = false" type="button">Cancel</button>
+                </div>
+            </form>
         </div>
         <div class="card-body" v-else v-text="body">
         </div>
