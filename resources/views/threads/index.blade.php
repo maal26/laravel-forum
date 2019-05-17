@@ -23,6 +23,9 @@
                 @empty
                     <p>There are no relevant result as this time.</p>
                 @endforelse
+                    <span class="d-flex justify-content-center">
+                        {{ $threads->links() }}
+                    </span>
             </div>
         </div>
     </div>
