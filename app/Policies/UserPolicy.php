@@ -9,7 +9,7 @@ class UserPolicy
 {
     use HandlesAuthorization;
 
-    public function update(User $user, User $signedInUser)
+    public function update(User $signedInUser, User $user)
     {
         return $signedInUser->id === $user->id;
     }

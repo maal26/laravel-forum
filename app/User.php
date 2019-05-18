@@ -2,12 +2,13 @@
 
 namespace App;
 
+use App\Traits\WithPolicy;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable, WithPolicy;
 
     protected $fillable = [
         'name', 'email', 'password', 'avatar_path'

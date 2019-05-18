@@ -10,7 +10,7 @@ class ProfileController extends Controller
     public function show(User $user)
     {
         return view('profiles.show')->with([
-            'profileUser' => $user,
+            'profileUser' => $user->append('can'),
             'activities'  => Activity::feed($user)
         ]);
     }
