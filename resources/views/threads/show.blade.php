@@ -7,7 +7,8 @@
                 <div class="col-md-8">
                     <div class="card mb-3">
                         <div class="card-header d-flex align-items-center justify-content-between">
-                            <div>
+                            <div class="d-flex align-items-center">
+                                <img class="mr-2 rounded-circle" src="{{ $thread->creator->avatar_path }}" alt="" width="50" height="50">
                                 <a href="/profiles/{{ $thread->creator->name }}">{{ $thread->creator->name }}</a> posted:
                                 {{ $thread->title }}
                             </div>

@@ -9,6 +9,19 @@
                     <hr>
                 </h3>
 
+                @can('update', $profileUser)
+                    <form action="/users/{{ $profileUser->id }}/avatar" method="post" enctype="multipart/form-data">
+                        @csrf
+
+                        <input type="file" name="avatar">
+
+                        <button class="btn btn-sm btn-primary">Add Avatar</button>
+                    </form>
+                @endcan
+
+
+                <img src="{{ $profileUser->avatar_path }}" alt="avatar" width="50" height="50">
+
                 @forelse ($activities as $date => $activity)
                     <h3>{{ $date }}</h3>
                     @foreach ($activity as $record)

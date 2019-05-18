@@ -36,6 +36,16 @@ class User extends Authenticatable
         return $this->hasMany(Activity::class);
     }
 
+    public function lastReply()
+    {
+        return $this->hasOne(Reply::class)->latest();
+    }
+
+    public function getAvatarPathAttribute($value)
+    {
+        return empty($value) ? '/images/default.jpg' : url("/storage/{$value}");
+    }
+
     public function read(Thread $thread)
     {
         cache()->forever(
@@ -47,10 +57,5 @@ class User extends Authenticatable
     public function visitedThreadCacheKey(Thread $thread)
     {
         return sprintf('user.%s.visits.%s', $this->id, $thread->id);
-    }
-
-    public function lastReply()
-    {
-        return $this->hasOne(Reply::class)->latest();
     }
 }
