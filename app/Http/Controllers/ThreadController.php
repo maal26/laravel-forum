@@ -6,6 +6,7 @@ use App\Channel;
 use App\Filters\ThreadFilter;
 use App\Http\Requests\ThreadStoreRequest;
 use App\Thread;
+use App\Trending;
 use Illuminate\Http\Request;
 
 class ThreadController extends Controller
@@ -15,11 +16,14 @@ class ThreadController extends Controller
         $this->middleware('auth')->except(['index', 'show']);
     }
 
-    public function index(ThreadFilter $filters, Channel $channel)
+    public function index(ThreadFilter $filters, Channel $channel, Trending $trending)
     {
-        $threads = $this->getThreads($filters, $channel);
+        $threads  = $this->getThreads($filters, $channel);
 
-        return view('threads.index')->withThreads($threads);
+        return view('threads.index')->with([
+            'threads'  => $threads,
+            'trending' => $trending->get()
+        ]);
     }
 
     public function create()
@@ -39,11 +43,13 @@ class ThreadController extends Controller
         return redirect($thread->path())->withFlash('Your Thread has been published');
     }
 
-    public function show($channelId, Thread $thread)
+    public function show($channelId, Thread $thread, Trending $trending)
     {
         if (auth()->check()) {
             auth()->user()->read($thread);
         }
+
+        $trending->push($thread);
 
         return view('threads.show')->withThread($thread->append('isSubscribedTo'));
     }

@@ -27,6 +27,25 @@
                         {{ $threads->links() }}
                     </span>
             </div>
+
+            <div class="col-md-4">
+                @if (count($trending))
+                    <div class="card">
+                        <div class="card-header">
+                            Trending Threads
+                        </div>
+                        <div class="card-body">
+                            @foreach ($trending as $thread)
+                                <li class="list-group-item">
+                                    <a href="{{ url($thread->path) }}">
+                                        {{ $thread->title }}
+                                    </a>
+                                </li>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+            </div>
         </div>
     </div>
 @endsection
