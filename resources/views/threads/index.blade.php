@@ -7,18 +7,29 @@
                 @forelse($threads as $thread)
                     <div class="card mb-3">
                         <div class="card-header d-flex justify-content-between">
-                            <a href="{{ $thread->path() }}">
-                                @if (auth()->check() && $thread->hasUpdateFor(auth()->user()))
-                                    <strong>{{ $thread->title }}</strong>
-                                @else
-                                    {{ $thread->title }}
-                                @endif
-                            </a>
+                            <div>
+                                <a href="{{ $thread->path() }}">
+                                    @if (auth()->check() && $thread->hasUpdateFor(auth()->user()))
+                                        <strong>{{ $thread->title }}</strong>
+                                    @else
+                                        {{ $thread->title }}
+                                    @endif
+                                </a>
+
+                                <br>
+                                <span>
+                                    Posted By:
+                                    <a href="/profiles/{{ $thread->creator->name }}">{{ $thread->creator->name }}</a>
+                                </span>
+                            </div>
                             <a href="{{ $thread->path() }}">
                                 {{ $thread->replies_count }} {{ \Str::plural('reply', $thread->replies_count) }}
                             </a>
                         </div>
                         <div class="card-body">{{ $thread->body }}</div>
+                        <div class="card-footer">
+                            {{ $thread->visits() }} Visits
+                        </div>
                     </div>
                 @empty
                     <p>There are no relevant result as this time.</p>

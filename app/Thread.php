@@ -7,6 +7,7 @@ use App\Filters\Filters;
 use App\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Redis;
 
 class Thread extends Model
 {
@@ -94,8 +95,31 @@ class Thread extends Model
     public function hasUpdateFor(User $user)
     {
         $key = $user->visitedThreadCacheKey($this);
-        // $key = sprintf('user.%s.visits.%s', optional($user)->id ?? auth()->id(), $this->id);
 
         return $this->updated_at > cache($key);
+    }
+
+    public function recordVisit()
+    {
+        Redis::incr($this->visitsCacheKey());
+
+        return $this;
+    }
+
+    public function visits()
+    {
+        return Redis::get($this->visitsCacheKey()) ?? 0;
+    }
+
+    public function resetVisits()
+    {
+        Redis::del($this->visitsCacheKey());
+
+        return;
+    }
+
+    protected function visitsCacheKey()
+    {
+        return "threads.{$this->id}.visits";
     }
 }
