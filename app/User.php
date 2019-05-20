@@ -47,6 +47,14 @@ class User extends Authenticatable
         return empty($value) ? '/images/default.jpg' : url("/storage/{$value}");
     }
 
+    public function markEmailAsVerified()
+    {
+        return $this->forceFill([
+            'email_verified_at'  => $this->freshTimestamp(),
+            'confirmation_token' => null
+        ])->save();
+    }
+
     public function read(Thread $thread)
     {
         cache()->forever(

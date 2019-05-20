@@ -40,6 +40,6 @@ Route::get('profiles/{user}', 'ProfileController@show');
 Route::get('profiles/{user}/notifications', 'UserNotificationController@index');
 Route::delete('profiles/{user}/notifications/{notification}', 'UserNotificationController@destroy');
 
-Route::get('register/confirm', 'RegisterConfirmationController@index');
+Route::get('register/confirm', 'Auth\RegisterConfirmationController@index');
 
 Route::post('users/{user}/avatar', 'UserAvatarController@store');

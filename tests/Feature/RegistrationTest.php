@@ -49,7 +49,10 @@ class RegistrationTest extends TestCase
         $this->get("/register/confirm?token={$user->confirmation_token}")
             ->assertRedirect('/threads');
 
-        $this->assertInstanceOf(Carbon::class, $user->fresh()->email_verified_at);
+        $user->refresh();
+
+        $this->assertInstanceOf(Carbon::class, $user->email_verified_at);
+        $this->assertNull($user->confirmation_token);
     }
 
     /** @test */
@@ -63,5 +66,4 @@ class RegistrationTest extends TestCase
             ->assertRedirect('/threads')
             ->assertSessionHas('flash', 'Unknown token.');
     }
-
 }
