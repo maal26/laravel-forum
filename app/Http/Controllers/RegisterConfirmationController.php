@@ -3,20 +3,27 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
 class RegisterConfirmationController extends Controller
 {
     public function index(Request $request)
     {
-        if (!$request->has('token') && !$request->filled('token')) {
+        if (!$request->has('token')) {
             return redirect('/login');
         }
 
-        User::whereConfirmationToken($request->token)
+        try {
+            User::whereConfirmationToken($request->token)
             ->firstOrFail()
             ->markEmailAsVerified();
+        } catch (ModelNotFoundException $e) {
+            return redirect('/threads')
+                ->withFlash('Unknown token.');
+        }
 
-        return redirect('/threads');
+        return redirect('/threads')
+            ->withFlash('Your account is now confirmed. You may post to the forum.');
     }
 }
