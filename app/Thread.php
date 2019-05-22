@@ -7,17 +7,23 @@ use App\Filters\Filters;
 use App\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Str;
 
 class Thread extends Model
 {
     use RecordsActivity;
 
-    protected $fillable = ['title', 'body', 'user_id', 'channel_id'];
+    protected $fillable = [
+        'title', 'body', 'user_id', 'channel_id', 'slug'
+    ];
 
-    protected static $recordableEvents = ['created', 'deleting'];
+    protected static $recordableEvents = [
+        'created', 'deleting'
+    ];
 
-    protected $with = ['creator', 'channel'];
+    protected $with = [
+        'creator', 'channel'
+    ];
 
     public static function boot()
     {
@@ -28,11 +34,16 @@ class Thread extends Model
         });
     }
 
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
     public function path(?string $segment = null)
     {
         return is_null($segment)
-            ? "/threads/{$this->channel->slug}/{$this->id}"
-            : "/threads/{$this->channel->slug}/{$this->id}/{$segment}";
+            ? "/threads/{$this->channel->slug}/{$this->slug}"
+            : "/threads/{$this->channel->slug}/{$this->slug}/{$segment}";
     }
 
     public function getIsSubscribedToAttribute()
@@ -65,6 +76,28 @@ class Thread extends Model
     public function scopeFilter(Builder $query, Filters $filters)
     {
         return $filters->apply($query);
+    }
+
+    public function setSlugAttribute($value)
+    {
+        if (static::whereSlug($slug = Str::slug($value))->exists()) {
+            $slug = $this->incrementSlug($slug);
+        }
+
+        $this->attributes['slug'] = $slug;
+    }
+
+    protected function incrementSlug($slug)
+    {
+        $max = static::whereTitle($this->title)->latest('id')->value('slug');
+
+        if (is_numeric($max[-1])) {
+            return preg_replace_callback('/(\d+)$/', function ($matches) {
+                return $matches[1] + 1;
+            }, $max);
+        }
+
+        return "{$slug}-2";
     }
 
     public function addReply($reply)

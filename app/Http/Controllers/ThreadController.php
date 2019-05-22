@@ -8,6 +8,7 @@ use App\Http\Requests\ThreadStoreRequest;
 use App\Thread;
 use App\Trending;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class ThreadController extends Controller
 {
@@ -37,10 +38,12 @@ class ThreadController extends Controller
             'user_id'    => auth()->id(),
             'channel_id' => $request->channel_id,
             'title'      => $request->title,
-            'body'       => $request->body
+            'body'       => $request->body,
+            'slug'       => $request->title
         ]);
 
-        return redirect($thread->path())->withFlash('Your Thread has been published');
+        return redirect($thread->path())
+            ->withFlash('Your Thread has been published');
     }
 
     public function show($channelId, Thread $thread, Trending $trending)

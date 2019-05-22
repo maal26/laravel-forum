@@ -75,6 +75,36 @@ class StoreThreadsTest extends TestCase
             ->assertSessionHasErrors('body');
     }
 
+    /** @test */
+    public function a_thread_requires_a_unique_slug()
+    {
+        $this->signIn();
+
+        $thread = factory(Thread::class)->create(['title' => 'Foo title', 'slug' => 'foo-title']);
+
+        $this->assertEquals('foo-title', $thread->slug);
+
+        $this->post('/threads', $thread->toArray());
+
+        $this->assertTrue(Thread::whereSlug('foo-title-2')->exists());
+
+        $this->post('/threads', $thread->toArray());
+
+        $this->assertTrue(Thread::whereSlug('foo-title-3')->exists());
+    }
+
+    /** @test */
+    public function a_thread_with_a_title_that_ends_in_a_number_should_generate_the_proper_slug()
+    {
+        $this->signIn();
+
+        $thread = factory(Thread::class)->create(['title' => 'Some Title 24', 'slug' => 'some-title-24']);
+
+        $this->post('/threads', $thread->toArray());
+
+        $this->assertTrue(Thread::whereSlug('some-title-24-2')->exists());
+    }
+
     public function publishThread(array $threadOverrides = [], array $userOverrides = [])
     {
         $thread = factory(Thread::class)->make($threadOverrides);
