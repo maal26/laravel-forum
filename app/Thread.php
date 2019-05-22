@@ -14,7 +14,7 @@ class Thread extends Model
     use RecordsActivity;
 
     protected $fillable = [
-        'title', 'body', 'user_id', 'channel_id', 'slug'
+        'title', 'body', 'user_id', 'channel_id', 'slug', 'best_reply_id'
     ];
 
     protected static $recordableEvents = [
@@ -23,6 +23,10 @@ class Thread extends Model
 
     protected $with = [
         'creator', 'channel'
+    ];
+
+    protected $casts = [
+        'best_reply_id' => 'integer'
     ];
 
     public static function boot()
@@ -135,5 +139,10 @@ class Thread extends Model
     public function visits()
     {
         return new Visits($this);
+    }
+
+    public function markBestReply(Reply $reply)
+    {
+        $this->update(['best_reply_id' => $reply->id]);
     }
 }

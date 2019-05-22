@@ -52,4 +52,10 @@ class Reply extends Model
 
         return $matches[1];
     }
+
+    public function isBest()
+    {
+
+        return $this->thread->best_reply_id === $this->id;
+    }
 }
