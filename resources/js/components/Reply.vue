@@ -1,6 +1,6 @@
 <template>
     <div class="card mb-3" :id="`reply-${reply.id}`">
-        <div class="card-header d-flex align-items-center justify-content-between">
+        <div class="card-header d-flex align-items-center justify-content-between" :class="{'bg-success': isBest}">
             <div>
                 <a :href="`/profiles/${reply.owner.name}`">
                     {{ reply.owner.name }}
@@ -23,9 +23,13 @@
         </div>
         <div class="card-body" v-else v-html="body">
         </div>
-        <div class="card-footer d-flex" v-if="reply.can.update">
-            <button class="btn btn-sm btn-info mr-2" @click="editing = true">Edit</button>
-            <button class="btn btn-sm btn-danger" @click="destroy">Delete</button>
+        <div class="card-footer d-flex">
+            <div v-if="reply.can.update">
+                <button class="btn btn-sm btn-info mr-2" @click="editing = true">Edit</button>
+                <button class="btn btn-sm btn-danger" @click="destroy">Delete</button>
+            </div>
+
+            <button class="btn btn-sm btn-light ml-auto" @click="markBestReply" v-if="!isBest">Best Reply?</button>
         </div>
     </div>
 </template>
@@ -47,11 +51,13 @@ export default {
     data() {
         return {
             editing: false,
-            body: this.reply.body
+            body: this.reply.body,
+            isBest: false
         }
     },
     computed: {
         signedIn() {
+            console.log(window.App)
             return window.App.signedIn;
         }
     },
@@ -71,7 +77,17 @@ export default {
         destroy() {
             axios.delete(`/replies/${this.reply.id}`)
                 .then(_ => this.$emit('deleted', this.reply));
+        },
+        markBestReply() {
+            axios.post(`/replies/${this.reply.id}/best`)
+                .then(_ => this.isBest = true);
         }
     }
 }
 </script>
+
+<style lang="scss" scoped>
+.bg-success {
+    background-color: #DFF0D8 !important;
+}
+</style>
