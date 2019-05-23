@@ -16,6 +16,7 @@ $factory->define(Thread::class, function (Faker $faker) {
         'channel_id' => function () {
             return factory(Channel::class)->create()->id;
         },
+        'locked'     => false,
         'title'      => $title,
         'slug'       => Str::slug($title),
         'body'       => $faker->paragraph

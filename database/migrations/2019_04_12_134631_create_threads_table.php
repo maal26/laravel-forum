@@ -13,10 +13,16 @@ class CreateThreadsTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('channel_id');
             $table->unsignedBigInteger('best_reply_id')->nullable();
+            $table->boolean('locked')->default(false);
             $table->string('title');
             $table->string('slug')->unique();
             $table->text('body');
             $table->timestamps();
+
+            $table->foreign('best_reply_id')
+                ->references('id')
+                ->on('replies')
+                ->onDelete('set null');
         });
     }
 

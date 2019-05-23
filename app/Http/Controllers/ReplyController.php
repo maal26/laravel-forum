@@ -23,6 +23,8 @@ class ReplyController extends Controller
 
     public function store(ReplyStoreRequest $request, $channelId, Thread $thread)
     {
+        abort_if($thread->locked, Response::HTTP_UNPROCESSABLE_ENTITY, 'Thread is locked');
+
         $reply = $thread->addReply([
             'body'    => $request->body,
             'user_id' => auth()->id()
@@ -45,7 +47,7 @@ class ReplyController extends Controller
         $reply->delete();
 
         if (request()->wantsJson()) {
-            return response()->json(['status' => 'Reply Deleted']);
+            return response()->json(['status' => 'Reply Deleted'], Response::HTTP_NO_CONTENT);
         }
 
         return back();

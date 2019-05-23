@@ -14,7 +14,7 @@ class Thread extends Model
     use RecordsActivity;
 
     protected $fillable = [
-        'title', 'body', 'user_id', 'channel_id', 'slug', 'best_reply_id'
+        'title', 'body', 'user_id', 'channel_id', 'slug', 'best_reply_id', 'locked'
     ];
 
     protected static $recordableEvents = [
@@ -26,7 +26,8 @@ class Thread extends Model
     ];
 
     protected $casts = [
-        'best_reply_id' => 'integer'
+        'best_reply_id' => 'integer',
+        'locked'        => 'boolean'
     ];
 
     public static function boot()
@@ -144,5 +145,10 @@ class Thread extends Model
     public function markBestReply(Reply $reply)
     {
         $this->update(['best_reply_id' => $reply->id]);
+    }
+
+    public function lock()
+    {
+        $this->update(['locked' => true]);
     }
 }
