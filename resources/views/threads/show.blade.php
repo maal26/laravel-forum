@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <thread-view :replies-count="{{ $thread->replies_count }}" inline-template>
+    <thread-view :thread="{{ $thread }}" inline-template>
         <div class="container">
             <div class="row">
                 <div class="col-md-8">
@@ -26,7 +26,7 @@
                         <div class="card-body">{{ $thread->body }}</div>
                     </div>
 
-                    <replies @created="count++" @removed="count--"></replies>
+                    <replies @created="count++" @removed="count--" :is-locked="locked"></replies>
                 </div>
 
                 <div class="col-md-4">
@@ -36,11 +36,21 @@
                             by <a href="#">{{ $thread->creator->name }}</a>, and currently
                             has <span>@{{ count }}</span> {{ Str::plural('comment', $thread->replies_count) }}.
 
-                            @auth
-                                <p>
-                                    <subscribe-button :active="{{ json_encode($thread->isSubscribedTo) }}"></subscribe-button>
-                                </p>
-                            @endauth
+                            <div>
+                                @auth
+                                    <span>
+                                        <subscribe-button :active="{{ json_encode($thread->isSubscribedTo) }}"></subscribe-button>
+                                    </span>
+                                @endauth
+
+                                @if (auth()->check() && auth()->user()->isAdmin())
+                                    <span>
+                                        <button class="btn btn-light" @click="toggleLock">
+                                            @{{ btnLabel }}
+                                        </button>
+                                    </span>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>

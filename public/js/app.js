@@ -2126,10 +2126,20 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+  props: {
+    isLocked: {
+      type: Boolean,
+      required: true
+    }
+  },
   components: {
     Paginator: _Paginator__WEBPACK_IMPORTED_MODULE_0__["default"],
     NewReply: _NewReply__WEBPACK_IMPORTED_MODULE_2__["default"],
@@ -2252,7 +2262,6 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     signedIn: function signedIn() {
-      console.log(window.App);
       return window.App.signedIn;
     }
   },
@@ -2361,8 +2370,8 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
-    repliesCount: {
-      type: Number,
+    thread: {
+      type: Object,
       required: true
     }
   },
@@ -2372,8 +2381,24 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      count: this.repliesCount
+      count: this.thread.replies_count,
+      locked: this.thread.locked
     };
+  },
+  computed: {
+    btnLabel: function btnLabel() {
+      return this.locked ? 'Unlock' : 'Lock';
+    }
+  },
+  methods: {
+    toggleLock: function toggleLock() {
+      var _this = this;
+
+      var method = this.locked ? 'delete' : 'post';
+      axios[method]("/locked-threads/".concat(this.thread.slug)).then(function (_) {
+        return _this.locked = !_this.locked;
+      });
+    }
   }
 });
 
@@ -56362,7 +56387,21 @@ var render = function() {
         on: { changed: _vm.fetchReplies }
       }),
       _vm._v(" "),
-      _c("new-reply", { on: { created: _vm.addReply } })
+      !_vm.isLocked
+        ? _c("new-reply", { on: { created: _vm.addReply } })
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.isLocked
+        ? _c(
+            "p",
+            { staticClass: "d-flex justify-content-center alert alert-danger" },
+            [
+              _vm._v(
+                "\n        This thread has been locked. No more replies are allowed.\n    "
+              )
+            ]
+          )
+        : _vm._e()
     ],
     2
   )

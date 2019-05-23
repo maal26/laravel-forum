@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Thread;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
 class LockedThreadController extends Controller
 {
@@ -13,8 +11,13 @@ class LockedThreadController extends Controller
         $this->middleware('admin');
     }
 
-    public function store(Request $request, Thread $thread)
+    public function store(Thread $thread)
     {
-        $thread->lock();
+        $thread->update(['locked' => true]);
+    }
+
+    public function destroy(Thread $thread)
+    {
+        $thread->update(['locked' => false]);
     }
 }

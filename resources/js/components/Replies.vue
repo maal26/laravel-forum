@@ -6,7 +6,11 @@
 
         <paginator :data-set="dataSet" @changed="fetchReplies"></paginator>
 
-        <new-reply @created="addReply"></new-reply>
+        <new-reply @created="addReply" v-if="! isLocked"></new-reply>
+
+        <p v-if="isLocked" class="d-flex justify-content-center alert alert-danger">
+            This thread has been locked. No more replies are allowed.
+        </p>
     </div>
 </template>
 
@@ -15,6 +19,12 @@ import Paginator from './Paginator';
 import Reply from './Reply';
 import NewReply from './NewReply';
 export default {
+    props: {
+        isLocked: {
+            type: Boolean,
+            required: true
+        }
+    },
     components: {
         Paginator,
         NewReply,

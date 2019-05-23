@@ -3,8 +3,8 @@ import Replies from '../Replies.vue';
 import SubscribeButton from '../SubscribeButton.vue';
 export default {
     props: {
-        repliesCount: {
-            type: Number,
+        thread: {
+            type: Object,
             required: true
         }
     },
@@ -14,7 +14,21 @@ export default {
     },
     data() {
         return {
-            count: this.repliesCount
+            count: this.thread.replies_count,
+            locked: this.thread.locked,
+        }
+    },
+    computed: {
+        btnLabel() {
+            return this.locked ? 'Unlock' : 'Lock';
+        }
+    },
+    methods: {
+        toggleLock() {
+            const method = this.locked ? 'delete' : 'post';
+
+            axios[method](`/locked-threads/${this.thread.slug}`)
+                .then(_ => this.locked = !this.locked);
         }
     }
 }

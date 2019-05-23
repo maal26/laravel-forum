@@ -34,10 +34,30 @@ class LockThreadsTest extends TestCase
 
         $thread = factory(Thread::class)->create(['user_id' => auth()->id()]);
 
+        $this->assertFalse($thread->locked);
+
         $this->post("locked-threads/{$thread->slug}")
             ->assertStatus(Response::HTTP_OK);
 
         $this->assertTrue($thread->fresh()->locked);
+    }
+
+    /** @test */
+    public function administrators_can_unlock_threads()
+    {
+        $john = factory(User::class)->state('adm')->create();
+
+        $this->signIn($john);
+
+        $thread = factory(Thread::class)->create([
+            'user_id' => auth()->id(),
+            'locked'  => true
+        ]);
+
+        $this->delete("locked-threads/{$thread->slug}")
+               ->assertStatus(Response::HTTP_OK);
+
+        $this->assertFalse($thread->fresh()->locked);
     }
 
     /** @test */

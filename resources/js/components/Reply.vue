@@ -57,7 +57,6 @@ export default {
     },
     computed: {
         signedIn() {
-            console.log(window.App)
             return window.App.signedIn;
         }
     },
