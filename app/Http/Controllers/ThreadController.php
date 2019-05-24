@@ -8,7 +8,6 @@ use App\Http\Requests\ThreadStoreRequest;
 use App\Thread;
 use App\Trending;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
 class ThreadController extends Controller
 {
@@ -66,7 +65,6 @@ class ThreadController extends Controller
 
     public function update(Request $request, $channelId, Thread $thread)
     {
-
     }
 
     public function destroy(Channel $channel, Thread $thread)

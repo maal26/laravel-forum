@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Channel;
+use App\Rules\Recaptcha;
 use App\Thread;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Str;
@@ -11,6 +12,17 @@ use Tests\TestCase;
 class StoreThreadsTest extends TestCase
 {
     use DatabaseMigrations;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        // $m = \Mockery::mock(Recaptcha::class);
+
+        // $m->shouldReceive('passes')->andReturn(true);
+
+        // app()->instance(Recaptcha::class, $m);
+    }
 
     /** @test */
     public function guests_may_not_create_threads()
@@ -54,6 +66,13 @@ class StoreThreadsTest extends TestCase
     {
         $this->publishThread(['title' => Str::random(256)])
             ->assertSessionHasErrors('title');
+    }
+
+    /** @test */
+    public function a_thread_requires_recaptcha_verification()
+    {
+        $this->publishThread(['g-recaptcha-response' => 'test'])
+            ->assertSessionHasErrors('g-recaptcha-response');
     }
 
     /** @test */
