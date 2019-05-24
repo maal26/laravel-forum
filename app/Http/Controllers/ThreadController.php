@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use App\Channel;
 use App\Filters\ThreadFilter;
 use App\Http\Requests\ThreadStoreRequest;
+use App\Http\Requests\ThreadUpdateRequest;
 use App\Thread;
 use App\Trending;
-use Illuminate\Http\Request;
 
 class ThreadController extends Controller
 {
@@ -63,8 +63,11 @@ class ThreadController extends Controller
         //
     }
 
-    public function update(Request $request, $channelId, Thread $thread)
+    public function update(ThreadUpdateRequest $request, $channelId, Thread $thread)
     {
+        $thread->update($request->validated());
+
+        return $thread;
     }
 
     public function destroy(Channel $channel, Thread $thread)
