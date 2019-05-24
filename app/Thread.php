@@ -8,10 +8,11 @@ use App\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Laravel\Scout\Searchable;
 
 class Thread extends Model
 {
-    use RecordsActivity;
+    use RecordsActivity, Searchable;
 
     protected $fillable = [
         'title', 'body', 'user_id', 'channel_id', 'slug', 'best_reply_id', 'locked'
